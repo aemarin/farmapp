@@ -34,13 +34,10 @@ import joblib
 ######################          Read datasets
 
 
-s = pd.read_csv('data/suesca.csv')
-t = pd.read_csv('data/tocancipa.csv')
-
-#with urlopen('https://farmappdata.blob.core.windows.net/data/suesca.csv') as response:
-#    s = pd.read_csv(response)
-#with urlopen('https://farmappdata.blob.core.windows.net/data/tocancipa.csv') as response:
-#    t = pd.read_csv(response)
+with urlopen('https://farmappdata.blob.core.windows.net/data/suesca.csv') as response:
+    s = pd.read_csv(response)
+with urlopen('https://farmappdata.blob.core.windows.net/data/tocancipa.csv') as response:
+    t = pd.read_csv(response)
 
 t = t.rename(columns={'sensacion_térmica': 'sensacion_termica'})
 t['ciudad'] = 'tocancipa'
