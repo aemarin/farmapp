@@ -1,0 +1,29 @@
+name: Linux Container Dash (Flask) Python Workflow
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: azure/docker-login@v1
+      with:
+        login-server: farmapp.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    - run: |
+        docker build . -t farmapp.azurecr.io/myapp:${{ github.sha }}
+        docker push farmapp.azurecr.io/myapp:${{ github.sha }}
+    - name: Building web app
+      uses: azure/appservice-build@v2
+
+    - name: Deploy web App using GH Action azure/webapps-deploy     
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'farmapp'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        images: 'farmapp.azurecr.io/myapp:${{ github.sha }}'
